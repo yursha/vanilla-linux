@@ -23,3 +23,5 @@ Below is how the dependency tree looks like on Debian 9 "sid".
 Besides that, every executable and library also depends on `linux-vdso.so.1` `vdso (7)` and dynamic linker `/lib64/ld-linux-x86-64.so.2`.
 
 All those libraries should be copied to new root environment together with the shell binary in order for `chroot (8)` to succeed.
+
+NOTE: for `zsh` shell, you'll need all the same dependencies, but also `/lib/x86_64-linux-gnu/libcap.so.2` (user-space interfaces to the POSIX 1003.1e capabilities implemented in Linux) and `/lib/x86_64-linux-gnu/libm.so.6` (C math library).
