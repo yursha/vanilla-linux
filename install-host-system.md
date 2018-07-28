@@ -36,4 +36,4 @@ sh> ip link show dev wlp1s0
 
 ### Connect to the network
 
-We'll be using `netctl` to connect to the Wi-Fi network.
+We'll be using `wpa_supplicant` (http://w1.fi/wpa_supplicant/) to connect to the Wi-Fi network.
