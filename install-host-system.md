@@ -37,5 +37,3 @@ sh> ip link show dev wlp1s0
 ### Connect to the network
 
 We'll be using `wpa_supplicant (8)` (http://w1.fi/wpa_supplicant/) to connect to the Wi-Fi network. `wpa_supplicant` is Wi-Fi Protected Access client and IEEE 802.1X supplicant.
-
-WPA stands for W.
