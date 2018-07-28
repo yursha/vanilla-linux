@@ -1,4 +1,4 @@
-To ensure build/install time isolation between the host system and the target system, it's recommended to use `chroot (8)` environment.
+To ensure build/install time isolation between the host system and the target system, it's recommended to use `chroot (8)` jail.
 If such isolation is not provided, several threats can entail:
 
 - Host system may get corrupted by accidentally installing target tools or libraries into its system directories.
@@ -6,7 +6,7 @@ If such isolation is not provided, several threats can entail:
 
 You need some shell in the new root environment to be able to execute interactive commands. It can be any shell that you specify on the command line to `chroot (8)` or `$SHELL` if nothing is specified. In my case it is `/bin/bash`, so further conversation will use `bash` as an example, but all applies to other shells as well.
 
-Unfortunately, simply copying `bash` from host to target doesn't work.
+Unfortunately, simply copying `bash` from host to a chroot jail doesn't work.
 `bash` depends on several dynamic libraries, which needs to be present in the new root environment.
 Dependencies can be figured out by running `ldd /bin/bash` command.
 Below is how the dependency tree looks like on Debian 9 "sid".
