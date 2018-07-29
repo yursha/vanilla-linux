@@ -51,6 +51,25 @@ In a different tty start `wpa_supplicant` daemon with debugging enabled.
 sh> wpa_supplicant -iwlp1s0 -c/etc/wpa_supplicant/wpa_supplicant.conf -d
 ```
 
+Get back to original tty and configure Access Point connection with `wpa_cli`.
+
+```
+sh> wpa_cli
+> add_network
+0
+> set_network 0 ssid "MYSSID"
+OK
+> set_network 0 psk "passphrase"
+OK
+> enable_network 0
+OK
+> save_config
+OK
+> quit
+```
+
+Switch back to the tty, where `wpa_suppicant` is running.
+The configuration will be hot-reloaded which should be reflected in the log output.
 A series of state transitions will be reported.
 If successful, the connection will be established.
 
@@ -59,3 +78,66 @@ sh> ip link show dev wlp1s0
 2: wlp1s0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP mode DORMANT group default qlen 1000
   link/ether 6c:29:95:a6:85:97 brd ff:ff:ff:ff:ff:ff
 ```
+
+Obtain an IP address using `dhcpcd`.
+
+```
+sh> dhcpcd wlp1s0
+[...]
+sh> ping www.google.com
+[...]
+```
+
+## Update the system clock
+
+```
+sh> timedatectl set-ntp true
+sh> timedatectl status
+                      Local time: Sun 2018-07-29 03:46:55 UTC
+                  Universal time: Sun 2018-07-29 03:46:55 UTC
+                        RTC time: Sun 2018-07-29 03:46:55
+                       Time zone: UTC (UTC, +0000)
+       System clock synchronized: yes
+systemd-timesyncd.service active: yes
+                 RTC in local TZ: no
+```
+
+## Partition the disk and setup file systems
+
+```
+sh> lsblk
+NAME   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+loop0    7:0    0  463M  1 loop /run/archiso/sfs/airootfs
+sda      8:0    0 14.9G  0 disk 
+├─sda1   8:1    0   11G  0 part 
+├─sda2   8:2    0    1K  0 part 
+└─sda5   8:5    0    4G  0 part 
+sdb      8:16   1 14.8G  0 disk 
+├─sdb1   8:17   1  574M  0 part /run/archiso/bootmnt
+└─sdb2   8:18   1   64M  0 part 
+sh> fdisk /dev/sda
+sh> lsblk
+```
+
+Create filesystems.
+
+```
+sh> mkfs.ext4 /dev/sda1 # for host system
+sh> mkfs.ext4 /dev/sda2 # for Vanilla Linux system
+sh> mkswap /dev/sda3
+sh> swapon /dev/sda3
+```
+
+Mount the to-be-root partition.
+
+```
+sh> mount /dev/sda1 /mnt
+```
+
+## Install the system
+
+```
+sh> pacstrap /mnt base
+```
+
+
