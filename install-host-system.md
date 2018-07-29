@@ -37,3 +37,25 @@ sh> ip link show dev wlp1s0
 ### Connect to the network
 
 We'll be using `wpa_supplicant (8)` (http://w1.fi/wpa_supplicant/) to connect to the Wi-Fi network. `wpa_supplicant` is Wi-Fi Protected Access client and IEEE 802.1X supplicant.
+
+```
+sh> vi /etc/wpa_supplicant/wpa_supplicant.conf
+sh> cat /etc/wpa_supplicant/wpa_supplicant.conf
+ctrl_interface=/run/wpa_supplicant
+update_config=1
+```
+
+In a different tty start `wpa_supplicant` daemon with debugging enabled.
+
+```
+sh> wpa_supplicant -iwlp1s0 -c/etc/wpa_supplicant/wpa_supplicant.conf -d
+```
+
+A series of state transitions will be reported.
+If successful, the connection will be established.
+
+```
+sh> ip link show dev wlp1s0
+2: wlp1s0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP mode DORMANT group default qlen 1000
+  link/ether 6c:29:95:a6:85:97 brd ff:ff:ff:ff:ff:ff
+```
