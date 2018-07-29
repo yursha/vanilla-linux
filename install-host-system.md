@@ -185,7 +185,20 @@ Set the root password
 sh> passwd
 ```
 
-Install Linux-capable boot loader.
+## Install boot loader
+
+In order to boot Arch Linux, you must install a boot loader to the Master Boot Record.
+The boot loader is the first piece of software started by SeaBios.
+Boot loaders only need to support the file system on which kernel and initramfs reside (the file system on which `/boot` is located).
+It is responsible for loading the kernel with the wanted kernel parameters and initial RAM disk before initiating the boot process.
+
+```
+sh> pacman -S grub
+sh> grub-install --target=i386-pc /dev/sda
+sh> grub-mkconfig -o /boot/grub/grub.cfg
+```
+
+## Wrapping up
 
 Install intel-ucode and enable microcode updates.
 
