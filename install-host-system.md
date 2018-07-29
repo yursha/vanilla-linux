@@ -207,3 +207,32 @@ Exit chroot and unmount all the partitions with `umount -R /mnt`.
 ```
 sh> reboot
 ```
+
+## Post-installation
+
+Create user
+
+```
+sh> useradd --create-home alex
+sh> passwd alex
+```
+
+Install GUI
+
+```
+sh> pacman -S xorg-server
+sh> pacman -S xorg-xinit
+sh> pacman -S xterm
+sh> pacman -S i3
+sh> pacman -S chromium
+```
+
+Identify video card
+
+```
+sh> lspci | grep -e VGA -e 3D
+00:02.0 VGA compatible controller: Intel Corporation HD Graphics (rev 08)
+sh> pacman -S xf86-video-fbdev ## not required?
+sh> pacman -S xf86-video-vesa  ## not required?
+sh> pacman -S xf86-video-intel
+```
