@@ -134,10 +134,63 @@ Mount the to-be-root partition.
 sh> mount /dev/sda1 /mnt
 ```
 
-## Install the system
+## Install and configure the system
 
 ```
 sh> pacstrap /mnt base
 ```
 
+Generate fstab file.
 
+```
+sh> genfstab -U /mnt >> /mnt/etc/fstab
+```
+
+Chroot and configure
+
+```
+sh> arch-chroot /mnt
+sh> pacman -S vim
+sh> pacman -S tmux
+sh> pacman -S wpa_supplicant
+sh> ln -sf /usr/share/zoneinfo/America/Los_Angeles /etc/localtime
+sh> hwclock --systohc
+```
+
+Uncomment `en_US.UTF-8 UTF-8` in /etc/locale.gen
+
+```
+sh> locale-gen
+sh> vi /etc/locale.conf
+sh> cat /etc/locale.conf
+LANG=en_US.UTF-8
+```
+
+Configure network.
+
+```
+sh> vi /etc/hostname
+sh> cat /etc/hostname
+myhostname
+sh> vi /etc/hosts
+sh> cat /etc/hosts
+127.0.0.1      localhost
+::1            localhost
+127.0.0.1      myhostname.localdomain myhostname
+```
+
+Set the root password
+
+```
+sh> passwd
+```
+
+Install Linux-capable boot loader.
+
+Install intel-ucode and enable microcode updates.
+
+Exit chroot and unmount all the partitions with `umount -R /mnt`.
+
+```
+sh> reboot
+```
