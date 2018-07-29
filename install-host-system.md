@@ -234,3 +234,13 @@ sh> lspci | grep -e VGA -e 3D
 00:02.0 VGA compatible controller: Intel Corporation HD Graphics (rev 08)
 sh> pacman -S xf86-video-intel
 ```
+
+## Configure software
+
+- [urxvt](urxvt.md)
+- [tmux](tmux.md)
+- [bash](bash.md)
+- [vim](vim.md)
+- [git](git.md)
+- [chromium](chromium.md)
+- [tree](tree.md)
