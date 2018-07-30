@@ -237,6 +237,14 @@ sh> pacman -S xf86-video-intel
 
 ## Configure software
 
+To find minimal software use `expac` and `pacgraph` packages.
+
+```
+sh> pacman -S expac
+sh> expac -H M '%m\t%n' | sort -h
+sh> pacgraph -c
+```
+
 - [urxvt](urxvt.md)
 - [tmux](tmux.md)
 - [bash](bash.md)
