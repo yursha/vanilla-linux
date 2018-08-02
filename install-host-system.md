@@ -235,6 +235,25 @@ sh> lspci | grep -e VGA -e 3D
 sh> pacman -S xf86-video-intel
 ```
 
+## Sound
+
+My machine comes with 2 sound cards - HDMI and PCH.
+Create the following file to ensure that PCH card is set as default.
+
+```
+sh> vi /etc/asound.conf
+sh> cat /etc/asound.conf
+pcm.!default {
+    type hw
+    card PCH
+}
+
+ctl.!default {
+    type hw
+    card PCH
+}
+```
+
 ## Configure software
 
 To find minimal software use `expac` and `pacgraph` packages.
@@ -245,7 +264,7 @@ sh> expac -H M '%m\t%n' | sort -h
 sh> pacgraph -c
 ```
 
-- [urxvt](urxvt.md)
+- [st fork](https://github.com/yursha/terminal-emulator)
 - [tmux](tmux.md)
 - [bash](bash.md)
 - [vim](vim.md)
