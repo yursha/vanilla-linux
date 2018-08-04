@@ -222,9 +222,9 @@ Install GUI
 ```
 sh> pacman -S xorg-server
 sh> pacman -S xorg-xinit
-sh> pacman -S xterm
-sh> pacman -S i3 # be sure to select i3-wm, not i3-gaps as the latter doesn't work.
 sh> pacman -S chromium
+# Install Janus window manager from source
+# Install BlackWindow terminal emulator from source
 ```
 
 Identify video card
@@ -233,4 +233,9 @@ Identify video card
 sh> lspci | grep -e VGA -e 3D
 00:02.0 VGA compatible controller: Intel Corporation HD Graphics (rev 08)
 sh> pacman -S xf86-video-intel
+```
+
+
+```
+sh> pacman -S openssh
 ```
