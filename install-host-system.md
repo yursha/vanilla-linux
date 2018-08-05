@@ -281,3 +281,50 @@ sh> pacgraph -c
 - [git](git.md)
 - [chromium](chromium.md)
 - [tree](tree.md)
+
+## Map keys
+
+We want to map brightness up (F7) and down (F6) keys on Acer Chromebook.
+
+Log into Linux virtual terminal (not GUI).
+
+```
+sh> showkey --keycodes
+```
+
+`showkey` is a part of `kbd`.
+It prints key scancode, when you print a key.
+`showkey` reports scancodes 65 and 64 correspondingly.
+
+```
+sh> pacman -S xorg-xev
+sh> xev
+```
+
+`xev` reports keycodes 73 and 72 (symkeys 0xffc4 and 0xffc3) respectively.
+
+```
+sh> pacman -S xbindkeys
+sh> xbindkeys -d > ~/.xbindkeysrc
+sh> less /usr/include/X11/keysymdef.h
+```
+
+The latter file contains key mappings for `~/.xbindkeysrc`.
+They are `XK_F7` and `XK_F6` in our case.
+
+To find the keycodes for a particular key, enter the following command:
+
+```
+sh> xbindkeys -k
+```
+
+To troubleshoot a key which is not working:
+
+```
+sh> xbindkeys -n
+```
+
+And press a key.
+Note, that `xbindkeys` is a daemon.
+Make sure no other instances are running with `ps -ef | grep bindkeys`.
+
