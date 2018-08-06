@@ -25,3 +25,4 @@ Instructions to build a minimal Linux system, based on my reflections on the Lin
 1. [Install host system](install-host-system.md)
 1. [Create a partition and a file system for Vanilla Linux.](filesystem.md)
 1. [Create a chroot jail on Vanilla Linux partition.](chroot.md)
+1. [Install temporary toolchain on Vanilla Linux.](toolchain.md)

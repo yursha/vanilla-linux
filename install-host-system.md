@@ -122,8 +122,8 @@ sh> lsblk
 Create filesystems.
 
 ```
-sh> mkfs.ext4 /dev/sda1 # for host system
-sh> mkfs.ext4 /dev/sda2 # for Vanilla Linux system
+sh> mkfs -v -t ext4 /dev/sda1 # for host system
+sh> mkfs -v -t ext4 /dev/sda2 # for Vanilla Linux system
 sh> mkswap /dev/sda3
 sh> swapon /dev/sda3
 ```
@@ -328,3 +328,9 @@ And press a key.
 Note, that `xbindkeys` is a daemon.
 Make sure no other instances are running with `ps -ef | grep bindkeys`.
 
+## Linux console fonts
+
+```
+sh> pacman -S terminus-font
+sh> setfont ter-v22n
+```
