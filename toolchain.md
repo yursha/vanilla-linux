@@ -47,3 +47,42 @@ EOF
 sh> source ~/.bashrc
 ```
 
+## Cross-compile binutils
+
+The temporary libraries are cross-compiled. Because a cross-compiler by its nature cannot rely on anything from its host system, this method removes potential contamination of the target system by lessening the chance of headers or libraries from the host being incorporated into the new tools.
+
+```shell
+pacman -S flex bison
+```
+
+```shell
+git clone git://sourceware.org/git/binutils-gdb.git
+cd binutils-gdb
+git checkout binutils-2_31_1
+mkdir build
+cd build
+../configure --prefix=/tools               \
+            --with-build-sysroot=/mnt/lfs \
+            --target=x86_64-lfs-linux-gnu \
+            --disable-nls                 \
+            --disable-werror 
+make
+mkdir -v /tools/lib && ln -sv lib /tools/lib64
+make install
+```
+
+## Cross-compile GCC
+
+```shell
+pacman -S subversion # for MPFR
+pacman -S mercurial  # for GMP
+```
+
+```shell
+git clone git://gcc.gnu.org/git/gcc.git
+svn ls https://scm.gforge.inria.fr/anonscm/svn/mpfr/tags
+svn co https://scm.gforge.inria.fr/anonscm/svn/mpfr/tags/4.0.1 mpfr-4.0.1
+hg clone https://gmplib.org/repo/gmp/ gmp
+git clone https://scm.gforge.inria.fr/anonscm/git/mpc/mpc.git 
+cd gcc
+```
