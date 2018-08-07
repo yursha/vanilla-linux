@@ -334,3 +334,8 @@ Make sure no other instances are running with `ps -ef | grep bindkeys`.
 sh> pacman -S terminus-font
 sh> setfont ter-v22n
 ```
+
+## Disable power-off key
+
+Set `HandlePowerKey=ignore` in `/etc/systemd/logind.conf`.
+Reboot.
