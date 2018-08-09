@@ -86,3 +86,76 @@ hg clone https://gmplib.org/repo/gmp/ gmp
 git clone https://scm.gforge.inria.fr/anonscm/git/mpc/mpc.git 
 cd gcc
 ```
+
+Verify, that our linker is for x86-64.
+
+```
+readelf -l /bin/vim | grep interpreter
+    [Requesting program interpreter: /lib64/ld-linux-x86-64.so.2]
+```
+
+Apply the following patch so to-be-compiled GCC uses the linker from `/tools`, that
+we just built.
+
+```
+diff --git a/gcc/config/i386/linux64.h b/gcc/config/i386/linux64.h
+index f2d913e30ac..d30bb45c705 100644
+--- a/gcc/config/i386/linux64.h
++++ b/gcc/config/i386/linux64.h
+@@ -28,7 +28,7 @@ see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
+ #define GNU_USER_LINK_EMULATIONX32 "elf32_x86_64"
+ 
+ #define GLIBC_DYNAMIC_LINKER32 "/lib/ld-linux.so.2"
+-#define GLIBC_DYNAMIC_LINKER64 "/lib64/ld-linux-x86-64.so.2"
++#define GLIBC_DYNAMIC_LINKER64 "/tools/lib64/ld-linux-x86-64.so.2"
+ #define GLIBC_DYNAMIC_LINKERX32 "/libx32/ld-linux-x32.so.2"
+ 
+ #undef MUSL_DYNAMIC_LINKER32
+ ```
+
+Apply the following patch so to-be-compiled GCC installs x86-64 libs to `/lib`
+rather than `/lib64`.
+
+```
+diff --git a/gcc/config/i386/t-linux64 b/gcc/config/i386/t-linux64
+index 8ea0faff369..f25895eed59 100644
+--- a/gcc/config/i386/t-linux64
++++ b/gcc/config/i386/t-linux64
+@@ -33,6 +33,6 @@
+ comma=,
+ MULTILIB_OPTIONS    = $(subst $(comma),/,$(TM_MULTILIB_CONFIG))
+ MULTILIB_DIRNAMES   = $(patsubst m%, %, $(subst /, ,$(MULTILIB_OPTIONS)))
+-MULTILIB_OSDIRNAMES = m64=../lib64$(call if_multiarch,:x86_64-linux-gnu)
++MULTILIB_OSDIRNAMES = m64=../lib$(call if_multiarch,:x86_64-linux-gnu)
+ MULTILIB_OSDIRNAMES+= m32=$(if $(wildcard $(shell echo $(SYSTEM_HEADER_DIR))/../../usr/lib32),../lib32,../lib)$(call if_multiarch,:i386-linux-gnu)
+ MULTILIB_OSDIRNAMES+= mx32=../libx32$(call if_multiarch,:x86_64-linux-gnux32)
+```
+
+```
+mkdir build
+cd build
+../configure                                       \
+    --target=x86_64-lfs-linux-gnu                  \
+    --prefix=/tools                                \
+    --with-glibc-version=2.11                      \
+    --with-sysroot=$LFS                            \
+    --with-newlib                                  \
+    --without-headers                              \
+    --with-local-prefix=/tools                     \
+    --with-native-system-header-dir=/tools/include \
+    --disable-nls                                  \
+    --disable-shared                               \
+    --disable-multilib                             \
+    --disable-decimal-float                        \
+    --disable-threads                              \
+    --disable-libatomic                            \
+    --disable-libgomp                              \
+    --disable-libmpx                               \
+    --disable-libquadmath                          \
+    --disable-libssp                               \
+    --disable-libvtv                               \
+    --disable-libstdcxx                            \
+    --enable-languages=c,c++
+make
+make install
+```
