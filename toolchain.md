@@ -69,6 +69,7 @@ cd build
 make
 mkdir -v /tools/lib && ln -sv lib /tools/lib64
 make install
+ln -s /tools/lib/crt* /tools/lib/gcc/x86_64-lfs-linux-gnu/9.0.0/
 ```
 
 ## Cross-compile GCC
@@ -158,4 +159,47 @@ cd build
     --enable-languages=c,c++
 make
 make install
+```
+
+## Install linux api headers for libc
+
+```
+cd linux
+git tags
+git checkout v4.17
+make mrprober
+make INSTALL_HDR_PATH=/mnt/lfs/mnt/sdcard/headers-install-output headers_install
+cp -rv /mnt/lfs/mnt/sdcard/headers-install-output/include /tools/include
+```
+
+TODO: The last two could be one command. Intermediate location is not needed.
+
+## Install libc
+
+```
+git clone git://sourceware.org/git/glibc.git
+cd glibc
+git checkout release/2.28/master
+mkdir build
+cd build
+../configure                             \
+      --prefix=/tools                    \
+      --host=x86_64-lfs-linux-gnu        \
+      --build=x86_64-pc-linux-gnu        \
+      --enable-kernel=3.2                \
+      --with-headers=/tools/include      \
+      libc_cv_forced_unwind=yes          \
+      libc_cv_c_cleanup=yes
+make
+make install
+```
+
+## Sanity check
+
+```
+sh> echo 'int main(){}' > dummy.c
+sh> x86_64-lfs-linux-gnu-gcc -L/tools/lib dummy.c
+sh> readelf -l a.out | grep ': /tools'
+    [Requesting program interpreter: /tools/lib64/ld-linux-x86-64.so.2]
+sh> rm -v dummy.c a.out
 ```
