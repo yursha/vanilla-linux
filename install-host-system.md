@@ -41,8 +41,10 @@ We'll be using `wpa_supplicant (8)` (http://w1.fi/wpa_supplicant/) to connect to
 ```
 sh> vi /etc/wpa_supplicant/wpa_supplicant.conf
 sh> cat /etc/wpa_supplicant/wpa_supplicant.conf
-ctrl_interface=/run/wpa_supplicant
-update_config=1
+network={
+  ssid=""
+  psk=""
+}
 ```
 
 In a different tty start `wpa_supplicant` daemon with debugging enabled.
@@ -50,28 +52,6 @@ In a different tty start `wpa_supplicant` daemon with debugging enabled.
 ```
 sh> wpa_supplicant -iwlp1s0 -c/etc/wpa_supplicant/wpa_supplicant.conf -d
 ```
-
-Get back to original tty and configure Access Point connection with `wpa_cli`.
-
-```
-sh> wpa_cli
-> add_network
-0
-> set_network 0 ssid "MYSSID"
-OK
-> set_network 0 psk "passphrase"
-OK
-> enable_network 0
-OK
-> save_config
-OK
-> quit
-```
-
-Switch back to the tty, where `wpa_suppicant` is running.
-The configuration will be hot-reloaded which should be reflected in the log output.
-A series of state transitions will be reported.
-If successful, the connection will be established.
 
 ```
 sh> ip link show dev wlp1s0
@@ -150,9 +130,11 @@ Chroot and configure
 
 ```
 sh> arch-chroot /mnt
-sh> pacman -S vim
-sh> pacman -S tmux
-sh> pacman -S wpa_supplicant
+```
+
+Install all requires ArchLinux packages from `./packages.txt`.
+
+```
 sh> ln -sf /usr/share/zoneinfo/America/Los_Angeles /etc/localtime
 sh> hwclock --systohc
 ```
@@ -304,7 +286,7 @@ sh> xev
 `xev` reports keycodes 73 and 72 (symkeys 0xffc4 and 0xffc3) respectively.
 
 ```
-sh> pacman -S xbindkeys
+SH> PACMAN -s XBINDKEYS
 sh> xbindkeys -d > ~/.xbindkeysrc
 sh> less /usr/include/X11/keysymdef.h
 ```

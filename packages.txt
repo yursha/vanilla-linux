@@ -1,0 +1,24 @@
+# TOOLS
+
+vim "text editor"
+tmux "terminal multiplexer"
+#st
+ttf-inconsolata "font for the terminal emulator"
+xf86-video-intel
+openssh
+
+# NETWORKING
+wpa_supplicant
+
+# SYSTEM
+grub
+gcc
+make
+pkgconf
+
+# GUI
+xorg-server
+xorg-xinit
+#catwm
+chromium
+xbindkeys
