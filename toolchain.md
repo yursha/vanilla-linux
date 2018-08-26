@@ -81,11 +81,27 @@ pacman -S mercurial  # for GMP
 
 ```shell
 git clone git://gcc.gnu.org/git/gcc.git
-svn ls https://scm.gforge.inria.fr/anonscm/svn/mpfr/tags
-svn co https://scm.gforge.inria.fr/anonscm/svn/mpfr/tags/4.0.1 mpfr-4.0.1
+git tag
+git checkout gcc-8_2_0-release
+
+svn ls -v https://scm.gforge.inria.fr/anonscm/svn/mpfr/tags
+svn co -r 12202 https://scm.gforge.inria.fr/anonscm/svn/mpfr/tags/4.0.1 mpfr-4.0.1
+# svn ls -v ^/tags
+# svn info --show-item revision
+mkdir gcc/mpfr
+cp -r mpfr-4.0.1/* gcc/mpfr
+
 hg clone https://gmplib.org/repo/gmp/ gmp
+hg tags
+hg up gmp-6.1.0
+mkdir gcc/gmp
+cp -r gmp/* gcc/gmp
+
 git clone https://scm.gforge.inria.fr/anonscm/git/mpc/mpc.git 
-cd gcc
+git tag
+git checkout 1.1.0
+mkdir gcc/mpc
+cp -r mpc/* gcc/mpc
 ```
 
 Verify, that our linker is for x86-64.
@@ -132,6 +148,15 @@ index 8ea0faff369..f25895eed59 100644
  MULTILIB_OSDIRNAMES+= mx32=../libx32$(call if_multiarch,:x86_64-linux-gnux32)
 ```
 
+Append the following lines to `gcc/config/linux.h`, `gcc/config/i386/linux.h` and `gcc/config/i386/linux64.h`:
+
+```
+#undef STANDARD_STARTFILE_PREFIX_1
+#undef STANDARD_STARTFILE_PREFIX_2
+#define STANDARD_STARTFILE_PREFIX_1 "/tools/lib/"
+#define STANDARD_STARTFILE_PREFIX_2 ""
+```
+
 ```
 mkdir build
 cd build
@@ -139,7 +164,7 @@ cd build
     --target=x86_64-lfs-linux-gnu                  \
     --prefix=/tools                                \
     --with-glibc-version=2.11                      \
-    --with-sysroot=$LFS                            \
+    --with-sysroot=/mnt/lfs                        \
     --with-newlib                                  \
     --without-headers                              \
     --with-local-prefix=/tools                     \
@@ -198,8 +223,52 @@ make install
 
 ```
 sh> echo 'int main(){}' > dummy.c
-sh> x86_64-lfs-linux-gnu-gcc -L/tools/lib dummy.c
+sh> x86_64-lfs-linux-gnu-gcc dummy.c
 sh> readelf -l a.out | grep ': /tools'
     [Requesting program interpreter: /tools/lib64/ld-linux-x86-64.so.2]
 sh> rm -v dummy.c a.out
+```
+
+## Libstd++
+
+```
+cd gcc
+mkdir build-libstd++
+cd build-libstd++
+../libstdc++-v3/configure           \
+    --host=x86_64-lfs-linux-gnu     \
+    --prefix=/tools                 \
+    --disable-multilib              \
+    --disable-nls                   \
+    --disable-libstdcxx-threads     \
+    --disable-libstdcxx-pch         \
+    --with-gxx-include-dir=/tools/x86_64-lfs-linux-gnu/include/c++/8.2.0
+make
+make install
+```
+
+## Binutils - second pass
+
+```
+cd binutils-gdb/build
+rm -rf *
+CC=x86_64-lfs-linux-gnu-gcc                \
+AR=x86_64-lfs-linux-gnu-ar                 \
+RANLIB=x86_64-lfs-linux-gnu-ranlib         \
+../configure                   \
+    --prefix=/tools            \
+    --disable-nls              \
+    --disable-werror           \
+    --with-lib-path=/tools/lib \
+    --with-sysroot
+make
+make install
+```
+
+Readjust the linker
+
+```
+make -C ld clean
+make -C ld LIB_PATH=/usr/lib:/lib
+cp -v ld/ld-new /tools/bin
 ```
