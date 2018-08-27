@@ -18,6 +18,7 @@ grub
 gcc
 make
 pkgconf
+upower "for querying battery status"
 
 # GUI
 xorg-server
