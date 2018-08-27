@@ -11,7 +11,7 @@ openssh
 wpa_supplicant
 
 # SOUND
-alsa-tools
+alsa-utils
 
 # SYSTEM
 grub
