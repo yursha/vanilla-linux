@@ -10,6 +10,9 @@ openssh
 # NETWORKING
 wpa_supplicant
 
+# SOUND
+alsa-tools
+
 # SYSTEM
 grub
 gcc
