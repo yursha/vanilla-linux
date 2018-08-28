@@ -7,6 +7,9 @@ ttf-inconsolata "font for the terminal emulator"
 xf86-video-intel
 openssh
 
+# DEVELOPMENT
+python
+
 # NETWORKING
 wpa_supplicant
 
@@ -26,3 +29,4 @@ xorg-xinit
 #catwm
 chromium
 xbindkeys
+xorg-xwd "print screen"
