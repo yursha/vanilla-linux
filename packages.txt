@@ -9,6 +9,7 @@ openssh
 
 # DEVELOPMENT
 python
+python2
 
 # NETWORKING
 wpa_supplicant
