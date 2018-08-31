@@ -31,3 +31,4 @@ xorg-xinit
 chromium
 xbindkeys
 xorg-xwd "print screen"
+slock
