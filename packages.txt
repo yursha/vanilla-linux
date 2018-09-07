@@ -31,4 +31,6 @@ xorg-xinit
 chromium
 xbindkeys
 xorg-xwd "print screen"
+imagemagick "converting xwd screenshots to png"
 slock
+
